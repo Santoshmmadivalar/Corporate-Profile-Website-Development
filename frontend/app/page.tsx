@@ -126,7 +126,7 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.1] text-foreground"
           >
-            Engineering Premium Digital Infrastructure for <span className="text-gradient">Outpro.India</span>
+            AI-Powered Enterprise <span className="text-gradient">Business Management Platform</span>
           </motion.h1>
 
           <motion.p
@@ -135,7 +135,7 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto"
           >
-            Bespoke custom software engineering, high-throughput headless B2B/B3C e-commerce, and elegant UX architecture that generates real business impact.
+            An all-in-one corporate suite with secure JWT authentication, real-time CRM lead flows, schedule assistants, custom RAG document search engines, HR payroll portals, and interactive analytics.
           </motion.p>
 
           <motion.div
@@ -145,17 +145,17 @@ export default function HomePage() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              href="/contact"
+              href="/login"
               className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-primary-foreground bg-primary rounded-xl shadow-lg hover:bg-primary/95 hover:shadow-primary/25 hover:-translate-y-0.5 transition-all duration-200"
             >
-              Partner With Us
+              Access Platform Workspace
               <ArrowRight size={18} className="ml-2" />
             </Link>
             <Link
-              href="/portfolio"
+              href="/ai-assistant"
               className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 text-base font-semibold text-foreground bg-secondary hover:bg-accent border border-border/40 rounded-xl hover:-translate-y-0.5 transition-all duration-200"
             >
-              Explore Case Studies
+              Try AI Assistant
             </Link>
           </motion.div>
         </div>

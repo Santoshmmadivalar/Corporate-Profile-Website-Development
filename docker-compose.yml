@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: outpro_mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - outpro_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: outpro_backend
+    ports:
+      - '5050:5050'
+    environment:
+      - PORT=5050
+      - MONGODB_URI=mongodb://mongo:27017/outpro
+      - NODE_ENV=production
+      - CORS_ORIGIN=*
+      - JWT_SECRET=outpro_super_secret_jwt_key_2026
+    depends_on:
+      - mongo
+    networks:
+      - outpro_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: outpro_frontend
+    ports:
+      - '3000:3000'
+    environment:
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=http://localhost:5050/api
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - outpro_network
+
+volumes:
+  mongo_data:
+
+networks:
+  outpro_network:
+    driver: bridge

@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '../context/ThemeContext';
+import { AuthProvider } from '../context/AuthContext';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
+import { AIChatbot } from '../components/ui/AIChatbot';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -14,16 +16,16 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Outpro.India | Premium Enterprise Software & Brand UX Solutions',
+    default: 'AI-Powered Enterprise Business Management Platform',
     template: '%s | Outpro.India'
   },
-  description: 'Outpro.India designs and develops elite digital architectures. From custom software engineering and headless commerce to cloud migrations and premium UI/UX design.',
-  keywords: ['enterprise software development', 'headless commerce', 'React developer', 'Next.js agency', 'UI/UX design Kolkata', 'AWS Cloud Solutions', 'Outpro India'],
+  description: 'AI-Powered Enterprise Business Management Platform by Outpro.India. Features client portals, interactive HR managers, schedule boards, dynamic analytics, and custom RAG AI document assistants.',
+  keywords: ['enterprise business management', 'headless commerce', 'HR portal', 'B2B CRM software', 'RAG AI knowledge base', 'JWT security', 'Outpro India'],
   authors: [{ name: 'Outpro.India Team' }],
   metadataBase: new URL('http://localhost:3000'),
   openGraph: {
-    title: 'Outpro.India | Premium Enterprise Software & Brand UX Solutions',
-    description: 'Outpro.India designs and develops elite digital architectures, headless B2B commerce, and brand identity experiences.',
+    title: 'AI-Powered Enterprise Business Management Platform',
+    description: 'Bespoke custom software and brand design engineered for high speed and scale.',
     url: 'https://outpro.in',
     siteName: 'Outpro.India',
     locale: 'en_IN',
@@ -31,7 +33,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Outpro.India | Premium Enterprise Software Solutions',
+    title: 'AI-Powered Enterprise Business Management Platform',
     description: 'Bespoke custom software and brand design engineered for high speed and scale.',
   },
 };
@@ -45,11 +47,14 @@ export default function RootLayout({
     <html lang="en" className={`${plusJakartaSans.variable} h-full antialiased`} style={{ fontFamily: 'var(--font-plus-jakarta), sans-serif' }}>
       <body className="min-h-full flex flex-col bg-background text-foreground transition-all duration-300">
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-grow pt-20">
-            {children}
-          </main>
-          <Footer />
+          <AuthProvider>
+            <Navbar />
+            <main className="flex-grow pt-20">
+              {children}
+            </main>
+            <Footer />
+            <AIChatbot />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

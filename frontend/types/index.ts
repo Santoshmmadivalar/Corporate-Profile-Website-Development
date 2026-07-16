@@ -79,6 +79,28 @@ export interface TeamMember {
   order: number;
 }
 
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'employee' | 'client' | 'candidate' | 'user';
+  phone?: string;
+  title?: string;
+  department?: string;
+  companyName?: string;
+  avatar?: string;
+  bio?: string;
+  address?: string;
+  skills?: string[];
+  socialLinks?: {
+    linkedin?: string;
+    github?: string;
+    twitter?: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface APIResponse<T> {
   success: boolean;
   data: T;

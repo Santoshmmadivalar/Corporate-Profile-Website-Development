@@ -16,6 +16,9 @@ export const connectDB = async (): Promise<void> => {
       console.warn('MongoDB connection disconnected.');
     });
 
+    // Disable buffering so queries fail-fast if database is disconnected
+    mongoose.set('bufferCommands', false);
+
     // Shorten initial connection timeout so it boots fast even if offline
     await mongoose.connect(mongoURI, {
       serverSelectionTimeoutMS: 3000,

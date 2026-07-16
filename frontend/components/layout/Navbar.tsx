@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Sun, Moon, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
+import { NotificationBell } from '../ui/NotificationBell';
 import { cn } from '../../utils/cn';
 
 const navItems = [
@@ -13,7 +15,9 @@ const navItems = [
   { name: 'About Us', href: '/about' },
   { name: 'Services', href: '/services' },
   { name: 'Portfolio', href: '/portfolio' },
-  { name: 'Testimonials', href: '/testimonials' },
+  { name: 'Blogs', href: '/blogs' },
+  { name: 'Gallery', href: '/gallery' },
+  { name: 'FAQ', href: '/faq' },
   { name: 'Contact', href: '/contact' },
 ];
 
@@ -22,6 +26,15 @@ export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
+
+  const getPortalLink = () => {
+    if (!user) return '/login';
+    if (user.role === 'admin') return '/admin/dashboard';
+    if (user.role === 'employee') return '/employee/portal';
+    if (user.role === 'client') return '/client/portal';
+    return '/dashboard';
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,7 +95,7 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Theme & CTA Button */}
+          {/* Theme & Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={toggleTheme}
@@ -91,13 +104,39 @@ export const Navbar: React.FC = () => {
             >
               {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
             </button>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-primary-foreground bg-primary rounded-lg shadow-md hover:bg-primary/95 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200 group"
-            >
-              Let's Talk
-              <ArrowRight size={14} className="ml-2 transform group-hover:translate-x-1 transition-transform" />
-            </Link>
+            {user && <NotificationBell />}
+            {user ? (
+              <>
+                <Link
+                  href={getPortalLink()}
+                  className="px-4 py-2 text-sm font-semibold text-primary hover:bg-primary hover:text-primary-foreground border border-primary/20 rounded-lg transition-all duration-200"
+                >
+                  Portal ({user.role})
+                </Link>
+                <button
+                  onClick={logout}
+                  className="px-4 py-2 text-sm font-semibold text-foreground bg-secondary hover:bg-accent border border-border/40 rounded-lg transition-all duration-200"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-sm font-semibold text-foreground hover:text-primary transition-all duration-200"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-primary-foreground bg-primary rounded-lg shadow-md hover:bg-primary/95 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200 group"
+                >
+                  Let's Talk
+                  <ArrowRight size={14} className="ml-2 transform group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -147,14 +186,39 @@ export const Navbar: React.FC = () => {
                   </Link>
                 );
               })}
-              <div className="pt-4 border-t border-border/10">
-                <Link
-                  href="/contact"
-                  className="flex w-full items-center justify-center px-4 py-3 text-base font-bold text-primary-foreground bg-primary rounded-lg shadow-md hover:bg-primary/95 transition-all duration-200"
-                >
-                  Let's Talk
-                  <ArrowRight size={16} className="ml-2" />
-                </Link>
+              <div className="pt-4 border-t border-border/10 space-y-2">
+                {user ? (
+                  <>
+                    <Link
+                      href={getPortalLink()}
+                      className="flex w-full items-center justify-center px-4 py-3 text-base font-bold text-primary border border-primary/20 rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                    >
+                      Portal ({user.role})
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="w-full text-center px-4 py-3 text-base font-bold text-foreground bg-secondary rounded-lg hover:bg-accent transition-all duration-200"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="flex w-full items-center justify-center px-4 py-3 text-base font-bold text-foreground bg-secondary rounded-lg hover:bg-accent transition-all duration-200"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="flex w-full items-center justify-center px-4 py-3 text-base font-bold text-primary-foreground bg-primary rounded-lg shadow-md hover:bg-primary/95 transition-all duration-200"
+                    >
+                      Let's Talk
+                      <ArrowRight size={16} className="ml-2" />
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

@@ -1,10 +1,16 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
 import { Category } from '../models/Category';
 import { Service } from '../models/Service';
 import { Project } from '../models/Project';
 import { Testimonial } from '../models/Testimonial';
 import { TeamMember } from '../models/Team';
+import { User } from '../models/User';
+import { Job } from '../models/Job';
+import { Blog } from '../models/Blog';
+import { GalleryItem } from '../models/GalleryItem';
+import { FAQ } from '../models/FAQ';
 
 dotenv.config();
 
@@ -20,6 +26,11 @@ const seedDB = async (): Promise<void> => {
     await Project.deleteMany({});
     await Testimonial.deleteMany({});
     await TeamMember.deleteMany({});
+    await User.deleteMany({});
+    await Job.deleteMany({});
+    await Blog.deleteMany({});
+    await GalleryItem.deleteMany({});
+    await FAQ.deleteMany({});
 
     console.log('Cleared existing collections.');
 
@@ -315,6 +326,171 @@ const seedDB = async (): Promise<void> => {
 
     await TeamMember.insertMany(teamData);
     console.log('Seeded team members.');
+
+    // 6. Seed Users
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('password123', salt);
+
+    await User.insertMany([
+      {
+        name: 'Siddharth Sen',
+        email: 'admin@outpro.india',
+        password: hashedPassword,
+        role: 'admin',
+        title: 'CEO & Founder',
+        department: 'Executive'
+      },
+      {
+        name: 'Kabir Malhotra',
+        email: 'employee@outpro.india',
+        password: hashedPassword,
+        role: 'employee',
+        title: 'Head of Design',
+        department: 'Design'
+      },
+      {
+        name: 'Sarah Jenkins',
+        email: 'client@outpro.india',
+        password: hashedPassword,
+        role: 'client',
+        companyName: 'Vanguard Realty'
+      },
+      {
+        name: 'John Doe',
+        email: 'candidate@outpro.india',
+        password: hashedPassword,
+        role: 'candidate'
+      },
+      {
+        name: 'Jane Smith',
+        email: 'user@outpro.india',
+        password: hashedPassword,
+        role: 'user'
+      }
+    ]);
+    console.log('Seeded users.');
+
+    // 7. Seed Jobs
+    await Job.insertMany([
+      {
+        title: 'Senior Frontend Engineer (React/Next.js)',
+        department: 'Engineering',
+        location: 'Kolkata, West Bengal (Hybrid)',
+        description: 'We are looking for a Senior Frontend Engineer to build premium, high-performance web systems and Jamstack headless storefronts.',
+        requirements: [
+          '3+ years professional experience with React & Next.js',
+          'Deep understanding of TypeScript & state management engines',
+          'Experience building responsive, fluid user layouts with Tailwind CSS',
+          'Familiarity with performance optimization tools (Lighthouse, Core Web Vitals)'
+        ],
+        salaryRange: '₹12,00,000 - ₹18,0,000 per annum',
+        status: 'open'
+      },
+      {
+        title: 'Backend Developer (Node.js/MongoDB)',
+        department: 'Engineering',
+        location: 'Remote, India',
+        description: 'Join our backend engineering crew to construct high-throughput REST APIs, serverless cloud endpoints, and database architectures.',
+        requirements: [
+          'Proven experience with Node.js, Express, and Mongoose/MongoDB',
+          'Good grip on building secure REST/GraphQL API systems',
+          'Familiarity with Docker containers and CI/CD automation',
+          'Knowledge of caching systems (Redis) is a plus'
+        ],
+        salaryRange: '₹8,00,000 - ₹14,0,000 per annum',
+        status: 'open'
+      }
+    ]);
+    console.log('Seeded jobs.');
+
+    // 8. Seed Blogs
+    await Blog.insertMany([
+      {
+        title: 'Migrating Legacy Monoliths to Next.js & Serverless Microservices',
+        slug: 'migrating-monoliths-to-nextjs',
+        summary: 'A step-by-step architectural breakdown of decanting complex legacy content hubs into performant serverless nodes.',
+        content: `Decoupling a monolithic architecture requires structured phase decants. At Outpro.India, we analyze the data flow before breaking any services apart.
+        
+        1. **Identify the Boundaries**: Group models and controllers by domain contexts.
+        2. **API-First Decoupling**: Wrap the monolithic controllers in REST interfaces.
+        3. **Deploy Next.js Incremental Ingestion**: Direct static routes to Next.js static generation pipelines.
+        4. **Continuous Synchronization**: Build pub-sub triggers using queue systems to verify consistency.`,
+        author: 'Aravind Swaminathan',
+        category: 'Architecture',
+        tags: ['NextJS', 'Cloud', 'Serverless'],
+        image: 'https://images.unsplash.com/photo-1510915228340-29c85a43dcfe?auto=format&fit=crop&w=800&q=80',
+        likes: 24,
+        views: 140,
+        comments: [
+          { authorName: 'Sanjay Deshmukh', text: 'This was extremely helpful for our cloud migration plan.', date: '2026-07-11T12:00:00.000Z' }
+        ]
+      },
+      {
+        title: 'The Rise of Headless Commerce in B2B Corporate Operations',
+        slug: 'rise-of-headless-commerce-b2b',
+        summary: 'How decoupled API-first architectures enable massive scale, secure checkouts, and premium user experience dashboards.',
+        content: `Headless B2B Commerce provides substantial conversion increments by separating the shopping interface from order management backend logs.
+        
+        Why transition to decoupled storefronts?
+        - **Speed**: Optimized edge delivery translates to instant page loads.
+        - **Omnichannel flexibility**: Deploy the same API interfaces to iOS, web portals, and IoT checkouts.
+        - **Security**: Database nodes remain hidden behind edge caching endpoints, preventing query injection attempts.`,
+        author: 'Neha Roy',
+        category: 'E-Commerce',
+        tags: ['APIs', 'Headless', 'Decoupled'],
+        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
+        likes: 18,
+        views: 95,
+        comments: []
+      }
+    ]);
+    console.log('Seeded blogs.');
+
+    // 9. Seed GalleryItems
+    await GalleryItem.insertMany([
+      {
+        title: 'Outpro India Kolkata Office Workspace',
+        url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFlMjkzYiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzBmMTcyYSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSJ1cmwoI2cxKSIvPjxjaXJjbGUgY3g9IjQwMCIgY3k9IjMwMCIgcj0iMTIwIiBmaWxsPSIjMzhiZGY4IiBvcGFjaXR5PSIwLjEiLz48cGF0aCBkPSJNIDMwMCAyNTAgTCA1MDAgMjUwIEwgNDAwIDQ1MCBaIiBmaWxsPSIjMzhiZGY4IiBvcGFjaXR5PSIwLjIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZjhmYWZjIj5PdXRwcm8gSW5kaWEgV29ya3NwYWNlPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTclIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY0NzQ4YiI+U2VjdG9yIFYsIFNhbHQgTGFrZSwgS29sa2F0YSwgSW5kaWE8L3RleHQ+PC9zdmc+',
+        type: 'image',
+        category: 'Workspace',
+        description: 'Our open layout collaborative engineering center in Sector V, Salt Lake, Kolkata.'
+      },
+      {
+        title: 'B2B Client Strategy Sprint Session',
+        url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImcyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBmMTcyYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxZTFiNGIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSJ1cmwoI2cyKSIvPgogIDxjaXJjbGUgY3g9IjQwMCIgY3k9IjMwMCIgcj0iMTQwIiBmaWxsPSIjYTg1NWY3IiBvcGFjaXR5PSIwLjEiLz4KICA8cmVjdCB4PSIyNTAiIHk9IjIwMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIHJ4PSIxNSIgZmlsbD0iI2E4NTVmNyIgb3BhY2l0eT0iMC4xNSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyOCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmOGZhZmMiPkIyQiBTdHJhdGVneSBTcHJpbnQ8L3RleHQ+CiAgPHRleHQgeD0iNTAlIiB5PSI1NyUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjODE4Y2Y4Ij5Qcm9kdWN0IFdoaXRlYm9hcmQgJmFtcDsgRGVjb3VwbGVkIFNjaGVtYXM8L3RleHQ+Cjwvc3ZnPg==',
+        type: 'image',
+        category: 'Sprints',
+        description: 'Product managers and software architects whiteboard decoupled headless schemas.'
+      },
+      {
+        title: 'Outpro Platform Architectural Briefing',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+        type: 'video',
+        category: 'Engineering',
+        description: 'A walk-through showing Docker configurations and modular folder pipelines.'
+      }
+    ]);
+    console.log('Seeded gallery items.');
+
+    // 10. Seed FAQs
+    await FAQ.insertMany([
+      {
+        question: 'What types of development methodologies do you support?',
+        answer: 'We operate strictly under bi-weekly Agile sprints. We configure project boards on our Client Portal so you can track implementation progress, clear milestones, and review staging environments in real time.',
+        category: 'Process'
+      },
+      {
+        question: 'How do you ensure enterprise-level application security?',
+        answer: 'We secure operations by enforcing strict Role-Based Access Control (RBAC), implementing rate limiters, using Helmet protection headers, hashing secrets, and recording administrative audit logs for compliance checks.',
+        category: 'Security'
+      },
+      {
+        question: 'Can we hire Outpro developers for direct staff augmentation?',
+        answer: 'Yes! We offer flexible custom software contracts where our experienced React/Node developers and cloud architects work directly as integrated extensions of your internal software divisions.',
+        category: 'Billing'
+      }
+    ]);
+    console.log('Seeded FAQs.');
 
     console.log('Database seeded successfully!');
     process.exit(0);

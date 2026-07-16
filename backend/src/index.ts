@@ -43,6 +43,20 @@ const apiLimiter = rateLimit({
 // Apply rate limiter to all API routes
 app.use('/api', apiLimiter);
 
+// Database Connection Check Middleware
+app.use('/api', (req, res, next) => {
+  const isConnected = require('mongoose').connection.readyState === 1;
+  // Let the AI chatbot operate offline, but gate database-driven routes
+  if (!req.path.startsWith('/ai/chat') && !req.path.startsWith('/chat') && !isConnected) {
+    res.status(503).json({
+      success: false,
+      message: 'MongoDB database is offline. Please start MongoDB locally or check your MONGODB_URI connection configuration.'
+    });
+    return;
+  }
+  next();
+});
+
 // API Routes
 app.use('/api', apiRoutes);
 

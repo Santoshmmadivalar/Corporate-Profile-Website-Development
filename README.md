@@ -1,6 +1,6 @@
-# Outpro.India - Corporate Profile Web Platform
+# Outpro.India - AI-Powered Enterprise Business Management Platform
 
-An enterprise-grade, luxury digital presence platform designed and engineered for **Outpro.India**. This repository follows a monorepo structure containing a Next.js 15 (App Router, React 19, Tailwind v4, Framer Motion) frontend and a Node.js/Express MVC REST API backend connected to MongoDB Atlas.
+An enterprise-grade, premium SaaS business management platform designed and engineered for **Outpro.India**. This repository follows a monorepo structure containing a Next.js 16 (App Router, Tailwind CSS, Framer Motion) frontend and a Node.js/Express MVC REST API backend connected to MongoDB Atlas.
 
 ---
 

@@ -1,0 +1,36 @@
+name: Outpro.India CI-CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Monorepo Root Dependencies
+        run: npm ci
+
+      - name: Build and Lint Backend
+        run: |
+          npm ci --prefix backend
+          npm run build --prefix backend
+
+      - name: Build and Lint Frontend
+        run: |
+          npm ci --prefix frontend
+          # Disable Next telemetry to speed up build
+          export NEXT_TELEMETRY_DISABLED=1
+          npm run build --prefix frontend
