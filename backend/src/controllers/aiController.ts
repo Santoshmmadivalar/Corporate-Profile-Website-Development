@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import ai from '../services/gemini';
+import { generateGroqCompletion } from '../services/groqService';
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';
 import { getRelevantContext } from '../services/ragService';
@@ -113,7 +113,8 @@ export const processAIChat = async (req: Request, res: Response, next: NextFunct
     const ragContext = await getRelevantContext(message, 3);
     
     // Check if the API key is defined before attempting to query the API
-    if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '') {
+    const hasGroqKey = process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.trim() !== '';
+    if (hasGroqKey) {
       try {
         let systemPrompt = `You are the official Corporate Business Assistant for Outpro.India, a premium enterprise software engineering and cloud consultation agency.
 Your primary role is to answer questions professionally, factually, and concisely.
@@ -135,10 +136,10 @@ Guidelines:
           systemPrompt += `\n\n[Verified Company Knowledge Base Documents]:\n${ragContext}\n\nUse the verified knowledge context above to address the user query.`;
         }
 
-        const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
-        const result = await model.generateContent(`${systemPrompt}\n\nUser Query: "${message}"`);
-        const response = await result.response;
-        const responseText = response.text();
+        const responseText = await generateGroqCompletion(
+          `User Query: "${message}"`,
+          systemPrompt
+        );
         
         if (responseText) {
           await saveChatHistory(responseText);
@@ -152,8 +153,8 @@ Guidelines:
           });
           return;
         }
-      } catch (geminiError: any) {
-        console.warn('Gemini API call failed or quota exhausted. Using offline rule-based fallback:', geminiError.message);
+      } catch (groqError: any) {
+        console.warn('Groq API call failed. Using offline rule-based fallback:', groqError.message);
       }
     }
 
@@ -173,10 +174,10 @@ Guidelines:
         }
       }
       if (!answer) {
-        if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '') {
-          answer = "The Gemini API key is successfully loaded in the backend environment, but the request was completed in offline fallback mode because the API key has exhausted its Google free-tier token quota. Please ask about our services, client portals, or job openings to retrieve static details, or update your Google Cloud project billing.";
+        if (process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.trim() !== '') {
+          answer = "The Groq API key is successfully loaded in the backend environment, but the request was completed in offline fallback mode because the API key request encountered an error. Please contact Outpro.India engineering or double-check the API configuration.";
         } else {
-          answer = "I'm running in offline demonstration mode. To get tailored responses, please ensure a valid GEMINI_API_KEY is configured in your backend environment variables.";
+          answer = "I'm running in offline demonstration mode. To get tailored responses, please ensure a valid GROQ_API_KEY is configured in your backend environment variables.";
         }
       }
     }
@@ -207,7 +208,8 @@ export const generateProposal = async (req: any, res: Response, next: NextFuncti
 
     let proposalText = '';
 
-    if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '') {
+    const hasGroqKey = process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.trim() !== '';
+    if (hasGroqKey) {
       try {
         const prompt = `Generate a formal corporate B2B project proposal from Outpro.India based on the following inputs:
 - Business Category: ${businessType}
@@ -223,16 +225,12 @@ Structure the response beautifully using Markdown. Include:
 4. Tech Stack Recommendations
 5. Cost Estimation & Deliverables Summary`;
 
-        const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const responseText = response.text();
-
+        const responseText = await generateGroqCompletion(prompt);
         if (responseText) {
           proposalText = responseText.trim();
         }
       } catch (err: any) {
-        console.warn('Gemini proposal generation failed. Using templates.', err.message);
+        console.warn('Groq proposal generation failed. Using templates.', err.message);
       }
     }
 
@@ -299,18 +297,16 @@ export const generateContent = async (req: Request, res: Response, next: NextFun
     const { contentType, topic, keywords } = contentRequestSchema.parse(req.body);
     let generatedText = '';
 
-    if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '') {
+    const hasGroqKey = process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.trim() !== '';
+    if (hasGroqKey) {
       try {
         const prompt = `Generate copy content for a ${contentType} about "${topic}". ${keywords ? `Incorporate these keywords: ${keywords}` : ''}. Output the result in clean markdown.`;
-        const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const responseText = response.text();
+        const responseText = await generateGroqCompletion(prompt);
         if (responseText) {
           generatedText = responseText.trim();
         }
       } catch (err: any) {
-        console.warn('Gemini content builder failed:', err.message);
+        console.warn('Groq content builder failed:', err.message);
       }
     }
 
@@ -349,29 +345,31 @@ export const analyzeResume = async (req: any, res: Response, next: NextFunction)
     let interviewQuestions: string[] = ['How do you configure RBAC auth filters in an Express server?', 'Explain the document text retrieval logic for a custom RAG engine.'];
     let improvementSuggestions: string[] = ['Add references to custom API integrations', 'Elaborate on TypeScript interface structures'];
 
-    if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '') {
+    const hasGroqKey = process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.trim() !== '';
+    if (hasGroqKey) {
       try {
-        const prompt = `Perform an ATS review on the following resume text. Return a JSON structure ONLY with keys: "atsScore" (number 0-100), "skillGapAnalysis" (array of strings), "keywordSuggestions" (array of strings), "interviewQuestions" (array of strings), "improvementSuggestions" (array of strings). Do not include markdown tags:
+        const prompt = `Perform an ATS review on the following resume text. Return a JSON structure ONLY with keys: "atsScore" (number 0-100), "skillGapAnalysis" (array of strings), "keywordSuggestions" (array of strings), "interviewQuestions" (array of strings), "improvementSuggestions" (array of strings). Do not include markdown tags, code block wrappers, or any other formatting:
         
         Resume text:
         "${resumeText}"`;
 
-        const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const responseText = response.text();
+        const responseText = await generateGroqCompletion(
+          prompt,
+          'You are a precise resume parser. You MUST output ONLY valid JSON matching the exact requested format, without any markdown formatting or prefix/suffix.',
+          true
+        );
 
         if (responseText) {
           const jsonText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
           const parsed = JSON.parse(jsonText);
-          atsScore = parsed.atsScore || atsScore;
-          skillGapAnalysis = parsed.skillGapAnalysis || skillGapAnalysis;
-          keywordSuggestions = parsed.keywordSuggestions || keywordSuggestions;
-          interviewQuestions = parsed.interviewQuestions || interviewQuestions;
-          improvementSuggestions = parsed.improvementSuggestions || improvementSuggestions;
+          atsScore = parsed.atsScore ?? atsScore;
+          skillGapAnalysis = parsed.skillGapAnalysis ?? skillGapAnalysis;
+          keywordSuggestions = parsed.keywordSuggestions ?? keywordSuggestions;
+          interviewQuestions = parsed.interviewQuestions ?? interviewQuestions;
+          improvementSuggestions = parsed.improvementSuggestions ?? improvementSuggestions;
         }
       } catch (err: any) {
-        console.warn('Gemini resume scanner failed. Loading realistic mock reviews:', err.message);
+        console.warn('Groq resume scanner failed. Loading realistic mock reviews:', err.message);
       }
     }
 
