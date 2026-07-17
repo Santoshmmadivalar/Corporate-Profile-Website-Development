@@ -73,10 +73,8 @@ export default function TestimonialsPage() {
       {/* Testimonials Grid */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
         {loading
-          ? Array(3)
-              .fill(0)
-              .map((_, idx) => (
-                <div key={idx} className="animate-pulse bg-secondary/50 rounded-2xl h-64 border border-border/20" />
+          ? ['sk-testimonial-1', 'sk-testimonial-2', 'sk-testimonial-3'].map((skeletonId) => (
+                <div key={skeletonId} className="animate-pulse bg-secondary/50 rounded-2xl h-64 border border-border/20" />
               ))
           : testimonials.map((t) => (
               <div
@@ -87,11 +85,9 @@ export default function TestimonialsPage() {
                 
                 <div className="space-y-4 relative z-10">
                   <div className="flex space-x-1">
-                    {Array(t.rating)
-                      .fill(0)
-                      .map((_, i) => (
-                        <Star key={i} size={14} className="fill-primary text-primary" />
-                      ))}
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <Star key={`testimonial-${t._id}-star-${i + 1}`} size={14} className="fill-primary text-primary" />
+                    ))}
                   </div>
                   <p className="text-sm italic text-foreground leading-relaxed">
                     "{t.text}"

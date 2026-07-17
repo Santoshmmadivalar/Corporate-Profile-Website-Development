@@ -1,11 +1,6 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-
-const ClientPortal = dynamic(
-  () => import('./ClientPortal'),
-  { ssr: false }
-);
+import ClientPortal from './ClientPortal';
 
 export default function ClientPortalPage() {
   return <ClientPortal />;

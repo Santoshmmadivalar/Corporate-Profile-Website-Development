@@ -111,17 +111,19 @@ export const AIChatbot: React.FC = () => {
   const formatMarkdown = (text: string) => {
     if (!text) return null;
     const lines = text.split('\n');
-    return lines.map((line, idx) => {
+    return lines.map((line) => {
       let processed = line;
       // Bold Markdown **text**
       processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-primary">$1</strong>');
       // Inline Code `code`
       processed = processed.replace(/`(.*?)`/g, '<code class="bg-secondary/40 px-1.5 py-0.5 rounded font-mono text-xs text-primary">$1</code>');
 
+      const lineKey = `line-${processed.slice(0, 30).replace(/[^a-zA-Z0-9]/g, '-')}-${processed.length}`;
+
       if (processed.startsWith('- ')) {
         return (
           <li 
-            key={idx} 
+            key={lineKey} 
             className="ml-4 list-disc text-foreground/90 mt-1" 
             dangerouslySetInnerHTML={{ __html: processed.substring(2) }} 
           />
@@ -129,7 +131,7 @@ export const AIChatbot: React.FC = () => {
       }
       return (
         <p 
-          key={idx} 
+          key={lineKey} 
           className="mb-1.5 leading-relaxed text-foreground/90" 
           dangerouslySetInnerHTML={{ __html: processed }} 
         />
@@ -244,9 +246,9 @@ export const AIChatbot: React.FC = () => {
             {/* Preset prompt chips */}
             {messages.length === 1 && (
               <div className="p-3 bg-secondary/20 border-t border-border/40 flex flex-wrap gap-1.5">
-                {presets.map((p, idx) => (
+                {presets.map((p) => (
                   <button
-                    key={idx}
+                    key={p}
                     onClick={() => handlePresetClick(p)}
                     className="text-[10px] font-bold text-primary bg-primary/5 hover:bg-primary hover:text-primary-foreground border border-primary/20 rounded-full px-2.5 py-1 transition-all"
                   >

@@ -71,6 +71,7 @@ export default function EmployeePortalDashboard() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState<string>('');
+  const [currentDate, setCurrentDate] = useState<string>('');
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<LeaveFields>({
     resolver: zodResolver(leaveSchema)
@@ -78,6 +79,7 @@ export default function EmployeePortalDashboard() {
 
   // Local Clock ticking
   useEffect(() => {
+    setCurrentDate(new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
     const timer = setInterval(() => {
       setCurrentTime(new Date().toTimeString().split(' ')[0]);
     }, 1000);
@@ -215,7 +217,7 @@ export default function EmployeePortalDashboard() {
               <Sparkles size={12} className="animate-spin" />
               <span>Active Workspace Session</span>
             </span>
-            <span className="text-xs font-semibold text-muted-foreground">{new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            <span className="text-xs font-semibold text-muted-foreground">{currentDate || 'Loading date...'}</span>
           </div>
 
           <div className="my-6 z-10 text-center md:text-left">

@@ -165,8 +165,8 @@ export default function HomePage() {
       <section className="border-y border-border/40 py-12 bg-card/30 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {highlights.map((h, i) => (
-              <div key={i} className="space-y-1">
+            {highlights.map((h) => (
+              <div key={h.label} className="space-y-1">
                 <p className="text-3xl sm:text-5xl font-extrabold text-primary">
                   <StatsCounter end={h.value} suffix={h.suffix} />
                 </p>
@@ -244,8 +244,8 @@ export default function HomePage() {
               At Outpro.India, we dismiss standard template sites. We write bespoke, robust digital frameworks from the ground up, designed to load in milliseconds, scale effortlessly, and build complete customer credibility.
             </p>
             <div className="space-y-6">
-              {valueProps.map((item, idx) => (
-                <div key={idx} className="flex space-x-4">
+              {valueProps.map((item) => (
+                <div key={item.title} className="flex space-x-4">
                   <div className="p-3 h-11 w-11 rounded-lg bg-card border border-border/40 flex items-center justify-center shrink-0">
                     {item.icon}
                   </div>
@@ -358,11 +358,9 @@ export default function HomePage() {
               >
                 <div className="space-y-4">
                   <div className="flex space-x-1">
-                    {Array(t.rating)
-                      .fill(0)
-                      .map((_, i) => (
-                        <Star key={i} size={14} className="fill-primary text-primary" />
-                      ))}
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <Star key={`${t._id}-star-${i + 1}`} size={14} className="fill-primary text-primary" />
+                    ))}
                   </div>
                   <p className="text-sm italic text-foreground leading-relaxed">
                     "{t.text}"

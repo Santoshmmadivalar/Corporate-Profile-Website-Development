@@ -265,8 +265,8 @@ export default function ClientPortalDashboard() {
 
               {/* Chat Thread */}
               <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
-                {activeTicket.replies.map((reply, idx) => (
-                  <div key={idx} className={`p-3 rounded-xl max-w-md ${
+                {activeTicket.replies.map((reply) => (
+                  <div key={`${reply.senderName}-${reply.createdAt}-${reply.text.length}`} className={`p-3 rounded-xl max-w-md ${
                     reply.senderName === 'Sarah Jenkins' 
                       ? 'bg-primary/10 border border-primary/20 text-foreground ml-auto' 
                       : 'bg-secondary border border-border/40 text-foreground'
@@ -356,8 +356,8 @@ export default function ClientPortalDashboard() {
                 {/* Milestones checklist */}
                 <div className="space-y-2 border-t border-border/40 pt-4">
                   <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Project Milestones</h4>
-                  {proj.milestones.map((m, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-sm text-foreground">
+                  {proj.milestones.map((m) => (
+                    <div key={m.title} className="flex items-center gap-2 text-sm text-foreground">
                       {m.completed ? (
                         <CheckSquare className="text-emerald-500 shrink-0" size={16} />
                       ) : (
