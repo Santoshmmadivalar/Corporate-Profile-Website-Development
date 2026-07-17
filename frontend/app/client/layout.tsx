@@ -30,10 +30,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           {/* Profile details */}
           <div className="p-6 border-b border-border/40 flex items-center space-x-3">
             <div className="h-10 w-10 rounded-full bg-violet-500/20 text-violet-500 flex items-center justify-center font-bold">
-              {user?.name.charAt(0).toUpperCase()}
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'C'}
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-semibold truncate text-foreground">{user?.name}</p>
+              <p className="text-sm font-semibold truncate text-foreground">{user?.name || 'Client'}</p>
               <p className="text-xs text-muted-foreground truncate">{user?.companyName || 'Corporate Client'}</p>
             </div>
           </div>

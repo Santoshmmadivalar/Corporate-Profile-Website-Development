@@ -30,10 +30,10 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
           {/* Employee profile details */}
           <div className="p-6 border-b border-border/40 flex items-center space-x-3">
             <div className="h-10 w-10 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold">
-              {user?.name.charAt(0).toUpperCase()}
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'E'}
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-semibold truncate text-foreground">{user?.name}</p>
+              <p className="text-sm font-semibold truncate text-foreground">{user?.name || 'Employee'}</p>
               <p className="text-xs text-muted-foreground capitalize">{user?.title || 'Team Associate'}</p>
             </div>
           </div>

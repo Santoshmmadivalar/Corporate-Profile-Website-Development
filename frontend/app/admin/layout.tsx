@@ -43,11 +43,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* User Details */}
           <div className="p-6 border-b border-border/40 flex items-center space-x-3">
             <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-              {user?.name.charAt(0).toUpperCase()}
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-semibold truncate text-foreground">{user?.name}</p>
-              <p className="text-xs text-muted-foreground capitalize">{user?.role} Portal</p>
+              <p className="text-sm font-semibold truncate text-foreground">{user?.name || 'Admin'}</p>
+              <p className="text-xs text-muted-foreground capitalize">{user?.role || 'Admin'} Portal</p>
             </div>
           </div>
 
