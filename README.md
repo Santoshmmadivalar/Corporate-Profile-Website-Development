@@ -4,6 +4,7 @@ An enterprise-grade, premium SaaS business management platform designed and engi
 
 ---
 
+
 ## 🏗 Architecture & System Design
 
 ```mermaid
@@ -32,6 +33,7 @@ graph TD
         Express --> |Email triggers| NodeMailer[Nodemailer SMTP]
     end
 ```
+
 
 ---
 
@@ -290,3 +292,5 @@ To ensure the corporate portal achieves PageSpeed scores of **95+** and security
 2. **Security Audits**: The backend uses **Helmet** to force HTTPS, restrict iframe nesting (Clickjacking protection), and block MIME type sniffing.
 3. **Data Compression**: Gzip compression is enabled via the `compression` package to reduce transfer sizes for JS/CSS files by up to 70%.
 4. **Code Audits**: Run `npm run build` locally before pushing to Vercel/Render to capture compilation warning states.
+
+---
