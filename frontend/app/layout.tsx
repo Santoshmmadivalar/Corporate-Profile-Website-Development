@@ -20,8 +20,8 @@ export const metadata: Metadata = {
     template: '%s | Outpro.India'
   },
   description: 'AI-Powered Enterprise Business Management Platform by Outpro.India. Features client portals, interactive HR managers, schedule boards, dynamic analytics, and custom RAG AI document assistants.',
-  keywords: ['enterprise business management', 'headless commerce', 'HR portal', 'B2B CRM software', 'RAG AI knowledge base', 'JWT security', 'Outpro India'],
-  authors: [{ name: 'Outpro.India Team' }],
+  keywords: 'enterprise business management, headless commerce, HR portal, B2B CRM software, RAG AI knowledge base, JWT security, Outpro India',
+  authors: { name: 'Outpro.India Team' },
   metadataBase: new URL('http://localhost:3000'),
   openGraph: {
     title: 'AI-Powered Enterprise Business Management Platform',
