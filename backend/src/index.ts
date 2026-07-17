@@ -57,8 +57,56 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
+import swaggerDocument from './swagger.json';
+
+// Swagger Spec endpoint
+app.get('/api/swagger.json', (req, res) => {
+  res.json(swaggerDocument);
+});
+
+// Interactive Swagger UI documentation page
+app.get('/api-docs', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Outpro.India API Reference Docs</title>
+      <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" />
+      <style>
+        body { margin: 0; background: #0b0b0f; }
+        .swagger-ui { filter: invert(90%) hue-rotate(180deg); }
+        .swagger-ui .topbar { display: none; }
+        .swagger-ui .info .title { color: #5f1ed2; }
+      </style>
+    </head>
+    <body>
+      <div id="swagger-ui"></div>
+      <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+      <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js"></script>
+      <script>
+        window.onload = () => {
+          window.ui = SwaggerUIBundle({
+            url: '/api/swagger.json',
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+              SwaggerUIBundle.presets.apis,
+              SwaggerUIStandalonePreset
+            ],
+            layout: "StandaloneLayout"
+          });
+        };
+      </script>
+    </body>
+    </html>
+  `);
+});
+
 // API Routes
 app.use('/api', apiRoutes);
+
 
 // Health Check
 app.get('/health', (req, res) => {

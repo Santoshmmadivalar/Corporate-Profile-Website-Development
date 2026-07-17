@@ -1,0 +1,177 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Outpro.India Enterprise API Reference",
+    "description": "Interactive REST API documentation for Outpro.India Enterprise SaaS Business Management Platform.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5050/api",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Creates a new user profile and triggers a 6-digit email verification OTP.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password", "role"],
+                "properties": {
+                  "name": { "type": "string", "example": "John Doe" },
+                  "email": { "type": "string", "example": "john@outpro.india" },
+                  "password": { "type": "string", "example": "password123" },
+                  "role": { "type": "string", "enum": ["employee", "client", "candidate", "user"], "example": "user" },
+                  "phone": { "type": "string", "example": "+91 98765 43210" },
+                  "companyName": { "type": "string", "example": "Acme Corp" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created. Verification OTP triggered."
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate user",
+        "description": "Validates email and password, returning a JWT token inside cookies/json.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "example": "admin@outpro.india" },
+                  "password": { "type": "string", "example": "password123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful. Returns JWT."
+          }
+        }
+      }
+    },
+    "/auth/verify-otp": {
+      "post": {
+        "summary": "Verify registration OTP",
+        "description": "Confirms the 6-digit code sent during registration to active user login.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "otp"],
+                "properties": {
+                  "email": { "type": "string", "example": "john@outpro.india" },
+                  "otp": { "type": "string", "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP verified successfully. Access granted."
+          }
+        }
+      }
+    },
+    "/ai/chat": {
+      "post": {
+        "summary": "AI Business Assistant Chat",
+        "description": "Interact with Outpro's Corporate Assistant loaded with RAG system context.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["message"],
+                "properties": {
+                  "message": { "type": "string", "example": "What engineering stacks do you offer?" },
+                  "sessionId": { "type": "string", "example": "session-123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI completion response payload"
+          }
+        }
+      }
+    },
+    "/meetings": {
+      "get": {
+        "summary": "Retrieve user booked meetings",
+        "description": "Lists all mock virtual consultations and links for the logged-in user.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Array of user meetings" }
+        }
+      },
+      "post": {
+        "summary": "Book a new consultation meeting",
+        "description": "Schedules a time slot and generates mock meeting links.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["date", "time", "title"],
+                "properties": {
+                  "date": { "type": "string", "example": "2026-07-20" },
+                  "time": { "type": "string", "example": "14:00" },
+                  "title": { "type": "string", "example": "Sprint 1 Architecture Sync" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Meeting created." }
+        }
+      }
+    },
+    "/admin/analytics": {
+      "get": {
+        "summary": "Super Admin Analytics Stats",
+        "description": "Provides stats cards data, monthly growth metrics, and visitor charts overview.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "SaaS analytics data metrics" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

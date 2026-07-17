@@ -1,31 +1,35 @@
 # Outpro.India - AI-Powered Enterprise Business Management Platform
 
-An enterprise-grade, premium SaaS business management platform designed and engineered for **Outpro.India**. This repository follows a monorepo structure containing a Next.js 16 (App Router, Tailwind CSS, Framer Motion) frontend and a Node.js/Express MVC REST API backend connected to MongoDB Atlas.
+An enterprise-grade, premium SaaS business management platform designed and engineered for **Outpro.India**. This repository follows a monorepo structure containing a Next.js 16 (App Router, Tailwind CSS, Framer Motion) frontend and a Node.js/Express MVC REST API backend connected to MongoDB Atlas and powered by Groq/LLaMA AI services.
 
 ---
 
-
-
 ## 🏗 Architecture & System Design
-
-
 
 ```mermaid
 graph TD
-    User([Web Browser Client]) <--> |HTTPS / JSON| NextJS[Next.js 15 App Router Frontend]
-    NextJS <--> |REST API Requests| Express[Node/Express MVC Backend]
+    User([Web Browser Client]) <--> |HTTPS / JWT / HTTP-only Cookies| NextJS[Next.js 16 App Router Frontend]
+    NextJS <--> |REST API / JSON| Express[Node/Express MVC Backend]
     Express <--> |Mongoose ODM| Mongo[(MongoDB Atlas Database)]
     
-    subgraph Frontend Services
-        NextJS --> Tailwind[Tailwind CSS v4 Engine]
+    subgraph Frontend Architecture
+        NextJS --> Tailwind[Tailwind CSS v4 styling]
         NextJS --> Motion[Framer Motion Animations]
-        NextJS --> Forms[React Hook Form + Zod]
+        NextJS --> Forms[React Hook Form + Zod Validations]
+        NextJS --> AuthCtx[Auth Context Session Manager]
     end
 
-    subgraph Backend Middlewares
-        Express --> RateLimit[Rate Limiter]
+    subgraph Backend Core & Middlewares
+        Express --> AuthMW[JWT & RBAC Middleware Roles]
+        Express --> RAG[RAG Semantic Vector Search]
+        Express --> RateLimit[Express Rate Limiter]
         Express --> Helmet[Helmet Security Headers]
-        Express --> Compress[Compression Middleware]
+        Express --> Morgan[Morgan Logger]
+    end
+
+    subgraph External System Integrations
+        Express <--> |Chat completions| Groq[Groq AI llama-3.3-70b-versatile]
+        Express --> |Email triggers| NodeMailer[Nodemailer SMTP]
     end
 ```
 
@@ -36,35 +40,36 @@ graph TD
 ```
 / (workspace root)
 ├── README.md                      # Complete Developer & System Documentation
-├── frontend/                      # Next.js 15 Frontend Application
-│   ├── app/                       # Page Router & Layout segments
-│   │   ├── about/                 # Company Story & Leadership Grid
-│   │   ├── services/              # Capabilities Catalog & Detail Slugs
-│   │   ├── portfolio/             # Case Studies with KPI Dashboards
-│   │   ├── testimonials/          # Customer Feedback Lists
-│   │   ├── contact/               # Validated Contact Form Interface
-│   │   ├── layout.tsx             # Root template & Global Context mapping
-│   │   └── page.tsx               # Immersive Homepage
-│   ├── components/                # Reusable UI & Layout Components
-│   │   ├── layout/                # Responsive Header Navbar & Footer
-│   │   └── ui/                    # Accordion, StatsCounter, LoadingSkeletons
-│   ├── context/                   # Context Providers (Theme Mode toggle)
-│   ├── services/                  # Axios Endpoint request mappings
-│   ├── utils/                     # Conditional class string helper
-│   ├── types/                     # Shared TypeScript interfaces
-│   └── package.json               # Frontend dependencies list
+├── .github/                       # GitHub Actions workflows config
+│   └── workflows/ci-cd.yml        # CI/CD pipelines (Build, test, lint)
 │
-└── backend/                       # Express MVC REST API Backend
+├── frontend/                      # Next.js 16 App Router Frontend
+│   ├── app/                       # App segments and layouts
+│   │   ├── admin/                 # Admin User, Service, Blog CMS and Analytics dashboards
+│   │   ├── client/                # Client Portal (Projects, support tickets, billing)
+│   │   ├── employee/              # Employee Portal (Attendance logs, Punch-in, Leaves)
+│   │   ├── careers/               # Job posts & ATS Resume compatibility analyzer
+│   │   ├── meetings/              # Meeting Scheduler Calendar
+│   │   ├── login/                 # Form-validated OTP login page
+│   │   ├── register/              # Multi-role register workspace page
+│   │   └── page.tsx               # Immersive Homepage
+│   ├── components/                # Shared layout & atomic UI elements
+│   ├── context/                   # Context states (AuthContext, ThemeContext)
+│   └── services/                  # Axios core API endpoints registry
+│
+└── backend/                       # Node/Express MVC Backend API
     ├── src/
-    │   ├── config/                # Database connections and Seed scripts
-    │   ├── controllers/           # Endpoint handlers & validation
-    │   ├── models/                # Mongoose Database Schemas
-    │   ├── routes/                # Endpoint routing registries
-    │   ├── middleware/            # Rate limiting & Global error catch
-    │   └── index.ts               # Express boot entrypoint
-    ├── tsconfig.json              # TypeScript compilation setup
-    └── package.json               # Backend dependencies list
+    │   ├── config/                # Database config & sample seeds
+    │   ├── controllers/           # REST endpoints logic controllers
+    │   ├── middleware/            # JWT validation & role-based RBAC filters
+    │   ├── models/                # Mongoose schema models definitions
+    │   ├── routes/                # Endpoint registry routing groups
+    │   ├── services/              # Email, Groq AI, and custom RAG processors
+    │   ├── tests/                 # Native Node.js Unit testing suits
+    │   └── index.ts               # Express system entrypoint
+    └── package.json               # Backend dependencies
 ```
+
 
 ---
 
@@ -239,6 +244,27 @@ All backend endpoints are prefixed with `/api`. Rate limiting is configured at *
 3. Vercel automatically detects Next.js build frameworks.
 4. Add Environment Variable:
    - `NEXT_PUBLIC_API_URL=https://outpro-backend.onrender.com/api` (your production backend API URL)
+
+---
+
+## ⚙ Testing & Engineering Specs
+
+### 1. Interactive API Documentation (OpenAPI/Swagger)
+- An interactive Swagger UI API console is served at [http://localhost:5050/api-docs](http://localhost:5050/api-docs) in development.
+- Powered dynamically using Swagger UI via CDN with dark-theme styling integrations.
+- Schema spec is configured at [swagger.json](file:///c:/Users/Santosh%20Madiwalar/OneDrive/Desktop/Corporate%20Profile%20Website%20for%20Outpro.India/backend/src/swagger.json).
+
+### 2. Unit Testing Suite
+- Backend unit tests are configured in the [tests directory](file:///c:/Users/Santosh%20Madiwalar/OneDrive/Desktop/Corporate%20Profile%20Website%20for%20Outpro.India/backend/src/tests/auth.test.ts).
+- Run the tests locally from the monorepo root:
+  ```bash
+  npm run test --prefix backend
+  ```
+- Powered natively by Node.js built-in `node:test` assertion libraries for fast executions.
+
+### 3. Continuous Integration (CI/CD)
+- GitHub Actions pipeline is defined in [ci-cd.yml](file:///c:/Users/Santosh%20Madiwalar/OneDrive/Desktop/Corporate%20Profile%20Website%20for%20Outpro.India/.github/workflows/ci-cd.yml).
+- Validates code style compiling, next.js build optimizations, and automatically runs unit tests on all branch push requests.
 
 ---
 

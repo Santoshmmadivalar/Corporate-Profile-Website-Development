@@ -28,6 +28,11 @@ jobs:
           npm ci --prefix backend
           npm run build --prefix backend
 
+      - name: Run Backend Unit Tests
+        run: |
+          npm run test --prefix backend
+
+
       - name: Build and Lint Frontend
         run: |
           npm ci --prefix frontend
