@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "prebuild": "npm ci --include=dev",
+    "prebuild": "npm install --production=false --prefer-offline",
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "ts-node-dev src/config/seed.ts",
